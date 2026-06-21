@@ -1,0 +1,6 @@
+# Copyright (c) 2026 Yuancheng Li
+# SPDX-License-Identifier: Apache-2.0
+
+[submodule "libs/Jet"]
+	path = libs/Jet
+	url = https://github.com/CubeCoders/Jet.git

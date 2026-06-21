@@ -1,0 +1,15 @@
+# Copyright (c) 2026 Yuancheng Li
+# SPDX-License-Identifier: Apache-2.0
+
+tests:
+  application.esp32c6_jet_game:
+    tags:
+      - application
+      - esp32c6
+    platform_allow:
+      - esp32c6_devkitc/esp32c6/hpcore
+    harness: console
+    harness_config:
+      type: one_line
+      regex:
+        - "ESP32-C6 Jet Game initialized"
