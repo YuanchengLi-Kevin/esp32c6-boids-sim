@@ -17,16 +17,29 @@ Target Hardware
 Dependencies
 ------------
 
-Jet is included as a Git submodule. Initialize it after cloning::
+Jet is included as a Git submodule. Initialize it after cloning:
+
+::
 
    git submodule update --init --recursive
 
 Building
 --------
 
-Build with the Zephyr virtual environment executable directly::
+Build the firmware with ``west``:
 
-   C:\Users\cheer\zephyrproject\.venv\Scripts\west.exe build -b esp32c6_devkitc/esp32c6/hpcore .
+::
+
+   west build -b esp32c6_devkitc/esp32c6/hpcore .
+
+Flashing
+--------
+
+Flash the built firmware to the board:
+
+::
+
+   west flash
 
 Project Structure
 -----------------
@@ -50,13 +63,41 @@ options are owned by this frontend in ``src/config/JetConfig.hpp``.
 Display Configuration
 ---------------------
 
-The ILI9341 is configured through Zephyr's MIPI DBI over SPI driver:
+The ILI9341 is configured through Zephyr's MIPI DBI over SPI driver. The key
+device-tree settings are:
 
-* ``compatible = "zephyr,mipi-dbi-spi"`` uses SPI as the physical bus.
-* ``spi-dev = <&spi2>`` selects the ESP32-C6 SPI peripheral.
-* ``mipi-max-frequency`` on the display node sets the SPI transfer clock used
-  by this MIPI DBI path.
-* ``pixel-format = <PANEL_PIXEL_FORMAT_RGB_565>`` uses 16-bit RGB565 pixels.
+::
+
+   compatible = "zephyr,mipi-dbi-spi";
+   spi-dev = <&spi2>;
+   mipi-max-frequency = <30000000>;
+   pixel-format = <PANEL_PIXEL_FORMAT_RGB_565>;
+
+These settings use SPI as the physical bus, select the ESP32-C6 SPI
+peripheral, set the SPI transfer clock used by this MIPI DBI path, and use
+16-bit RGB565 pixels.
+
+LCD Pin Layout
+--------------
+
+The LCD is wired to the ESP32-C6 DevKitC as follows:
+
+===========  =================
+LCD pin      ESP32-C6 pin
+===========  =================
+VCC          5V0
+GND          GND
+SCK / CLK    GPIO6
+SDI / MOSI   GPIO7
+CS           GPIO10
+D/C          GPIO11
+RESET / RST  GPIO18
+LED / BL     3V3 through 100 ohm resistor
+===========  =================
+
+The display is configured as write-only, so ``SDO / MISO`` is optional.
+``LED / BL`` is tied to 3V3 through a 100 ohm resistor, so the backlight is
+always on.
 
 RGB565 is used because Jet renders RGB565 natively and it minimizes SPI
 bandwidth compared with 18-bit color. A full 240x320 RGB565 upload is
@@ -73,7 +114,7 @@ only dirty horizontal spans after the first full-screen frame. This follows the
 same basic idea used by fast ILI9341 drivers such as ``fbcp-ili9341``: avoid
 transmitting unchanged pixels whenever possible.
 
-At the currently configured 20 MHz SPI clock, full-screen 60 FPS RGB565 upload
+At the currently configured 30 MHz SPI clock, full-screen 60 FPS RGB565 upload
 is not realistic. Smooth output depends on reducing transferred pixels through
 dirty updates, lower output resolution, interlacing, or a faster validated SPI
 clock.

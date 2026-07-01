@@ -48,10 +48,4 @@
 
 &gpio0 {
 	status = "okay";
-
-	lcd_backlight: lcd-backlight {
-		gpio-hog;
-		gpios = <19 GPIO_ACTIVE_HIGH>;
-		output-high;
-	};
 };
