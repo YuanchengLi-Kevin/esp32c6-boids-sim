@@ -4,13 +4,16 @@
 cmake_minimum_required(VERSION 3.20.0)
 
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
-project(esp32c6_jet_game LANGUAGES C CXX)
+project(esp32c6_boids_sim LANGUAGES C CXX)
 
 target_sources(app PRIVATE
     src/main.cpp
+    src/core/rendering.cpp
     src/features/boids/boids.cpp
-    src/features/game/game.cpp
-    src/features/rendering/rendering.cpp
+    src/features/boids/boids_renderer.cpp
+    src/features/boids/simulation.cpp
+    src/features/scene/scene.cpp
+    src/features/scene/bounds_outline.cpp
 )
 
 target_include_directories(app PRIVATE

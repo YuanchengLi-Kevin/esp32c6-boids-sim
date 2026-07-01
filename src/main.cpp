@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "features/game/game.hpp"
+#include "features/boids/simulation.hpp"
 
 int main()
 {
-	game::start();
+	boids::simulation::start();
 	return 0;
 }

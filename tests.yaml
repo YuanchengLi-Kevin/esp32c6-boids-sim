@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 tests:
-  application.esp32c6_jet_game:
+  application.esp32c6_boids_sim:
     tags:
       - application
       - esp32c6
@@ -12,4 +12,4 @@ tests:
     harness_config:
       type: one_line
       regex:
-        - "ESP32-C6 Jet Game initialized"
+        - "ESP32-C6 Boids Sim initialized"

@@ -50,8 +50,8 @@ Application features are grouped under ``src/features``. The entry point in
 Current features:
 
 * ``src/features/boids`` owns flock simulation.
-* ``src/features/game`` owns the main update/render loop.
-* ``src/features/rendering`` owns Jet scene setup and display upload.
+* ``src/features/boids`` owns flock simulation and the main update/render loop.
+* ``src/features/scene`` owns Jet scene setup, display upload, and scene helpers.
 
 Configuration
 -------------
