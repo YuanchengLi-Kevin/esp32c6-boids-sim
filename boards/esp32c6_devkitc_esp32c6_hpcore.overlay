@@ -3,13 +3,34 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include <zephyr/dt-bindings/pinctrl/esp32c6-pinctrl.h>
+#include <zephyr/dt-bindings/display/panel.h>
+#include <zephyr/dt-bindings/gpio/gpio.h>
 
 / {
 	chosen {
 		zephyr,console = &usb_serial;
 		zephyr,shell-uart = &usb_serial;
-		zephyr,audio-uart = &uart1;
+		zephyr,display = &ili9341;
+	};
+
+	mipi_dbi {
+		compatible = "zephyr,mipi-dbi-spi";
+		spi-dev = <&spi2>;
+		dc-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio0 18 GPIO_ACTIVE_LOW>;
+		write-only;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ili9341: ili9341@0 {
+			compatible = "ilitek,ili9341";
+			reg = <0>;
+			mipi-max-frequency = <30000000>;
+			pixel-format = <PANEL_PIXEL_FORMAT_RGB_565>;
+			width = <240>;
+			height = <320>;
+			rotation = <0>;
+		};
 	};
 };
 
@@ -17,29 +38,20 @@
 	status = "okay";
 };
 
-&pinctrl {
-	uart1_audio_default: uart1_audio_default {
-		group1 {
-			pinmux = <UART1_TX_GPIO4>;
-			output-high;
-		};
+&i2c0 {
+	status = "disabled";
+};
 
-		group2 {
-			pinmux = <UART1_RX_GPIO5>;
-			bias-pull-up;
-		};
+&spi2 {
+	status = "okay";
+};
+
+&gpio0 {
+	status = "okay";
+
+	lcd_backlight: lcd-backlight {
+		gpio-hog;
+		gpios = <19 GPIO_ACTIVE_HIGH>;
+		output-high;
 	};
-};
-
-&uart1 {
-	status = "okay";
-	current-speed = <1000000>;
-	pinctrl-0 = <&uart1_audio_default>;
-	pinctrl-names = "default";
-	dmas = <&dma 0>, <&dma 1>;
-	dma-names = "rx", "tx";
-};
-
-&dma {
-	status = "okay";
 };

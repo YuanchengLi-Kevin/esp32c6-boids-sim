@@ -8,7 +8,9 @@ project(esp32c6_jet_game LANGUAGES C CXX)
 
 target_sources(app PRIVATE
     src/main.cpp
+    src/features/boids/boids.cpp
     src/features/game/game.cpp
+    src/features/rendering/rendering.cpp
 )
 
 target_include_directories(app PRIVATE

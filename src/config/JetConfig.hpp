@@ -14,4 +14,14 @@
  */
 #include "JetConfig.example.hpp"
 
+/*
+ * Keep the first Zephyr display path simple: one half-width framebuffer for
+ * the full screen. The upload code expands each stored pixel horizontally.
+ */
+#undef FIELD_BUFFERS
+#define FIELD_BUFFERS 0
+
+#undef SSR_FIELD_REFLECT
+#define SSR_FIELD_REFLECT 0
+
 #endif  // ESP32C6_JET_GAME_CONFIG_JET_CONFIG_HPP_
