@@ -15,46 +15,9 @@ namespace boids
 
 		constexpr float kEpsilon = 0.0001f;
 
-		Vec3 add(const Vec3 &a, const Vec3 &b)
-		{
-			return {a.x + b.x, a.y + b.y, a.z + b.z};
-		}
-
-		Vec3 subtract(const Vec3 &a, const Vec3 &b)
-		{
-			return {a.x - b.x, a.y - b.y, a.z - b.z};
-		}
-
-		Vec3 multiply(const Vec3 &value, float scale)
-		{
-			return {value.x * scale, value.y * scale, value.z * scale};
-		}
-
 		float lengthSquared(const Vec3 &value)
 		{
 			return (value.x * value.x) + (value.y * value.y) + (value.z * value.z);
-		}
-
-		Vec3 clampSpeed(const Vec3 &velocity, float min_speed, float max_speed)
-		{
-			const float speed_sq = lengthSquared(velocity);
-			if (speed_sq < kEpsilon)
-			{
-				return {min_speed, 0.0f, 0.0f};
-			}
-
-			const float speed = std::sqrt(speed_sq);
-			if (speed > max_speed)
-			{
-				return multiply(velocity, max_speed / speed);
-			}
-
-			if (speed < min_speed)
-			{
-				return multiply(velocity, min_speed / speed);
-			}
-
-			return velocity;
 		}
 
 		uint32_t nextRandom(uint32_t &state)
@@ -139,7 +102,7 @@ namespace boids
 			const float speed = randomRange(random_state, config_.min_speed, config_.max_speed);
 
 			boids_[i].position = randomVector(random_state, config_.bounds_min, config_.bounds_max);
-			boids_[i].velocity = clampSpeed(multiply(direction, speed), config_.min_speed, config_.max_speed);
+			boids_[i].velocity = (direction * speed).clamp_magnitude(config_.min_speed, config_.max_speed);
 			next_velocities_[i] = boids_[i].velocity;
 		}
 	}
@@ -169,20 +132,20 @@ namespace boids
 					continue;
 				}
 
-				const Vec3 offset = subtract(boids_[j].position, boids_[i].position);
+				const Vec3 offset = boids_[j].position - boids_[i].position;
 				const float distance_sq = lengthSquared(offset);
 				if (distance_sq > neighbor_radius_sq)
 				{
 					continue;
 				}
 
-				alignment = add(alignment, boids_[j].velocity);
-				cohesion = add(cohesion, boids_[j].position);
+				alignment = alignment + boids_[j].velocity;
+				cohesion = cohesion + boids_[j].position;
 				++neighbor_count;
 
 				if (distance_sq < separation_radius_sq && distance_sq > kEpsilon)
 				{
-					separation = add(separation, multiply(offset, -1.0f / distance_sq));
+					separation = separation + (offset * (-1.0f / distance_sq));
 				}
 			}
 
@@ -190,25 +153,23 @@ namespace boids
 			if (neighbor_count > 0u)
 			{
 				const float inv_neighbors = 1.0f / static_cast<float>(neighbor_count);
-				alignment = subtract(multiply(alignment, inv_neighbors), boids_[i].velocity);
-				cohesion = subtract(multiply(cohesion, inv_neighbors), boids_[i].position);
+				alignment = (alignment * inv_neighbors) - boids_[i].velocity;
+				cohesion = (cohesion * inv_neighbors) - boids_[i].position;
 
-				acceleration = add(acceleration, multiply(separation, config_.separation_weight));
-				acceleration = add(acceleration, multiply(alignment, config_.alignment_weight));
-				acceleration = add(acceleration, multiply(cohesion, config_.cohesion_weight));
+				acceleration += separation * config_.separation_weight;
+				acceleration += alignment * config_.alignment_weight;
+				acceleration += cohesion * config_.cohesion_weight;
 			}
 
-			next_velocities_[i] = clampSpeed(
-				add(boids_[i].velocity, multiply(acceleration, dt_seconds)),
-				config_.min_speed,
-				config_.max_speed);
+			next_velocities_[i] =
+				(boids_[i].velocity + (acceleration * dt_seconds)).clamp_magnitude(config_.min_speed, config_.max_speed);
 		}
 
 		for (std::size_t i = 0; i < active_count_; ++i)
 		{
 			boids_[i].velocity = next_velocities_[i];
 			boids_[i].position = clampPosition(
-				add(boids_[i].position, multiply(boids_[i].velocity, dt_seconds)),
+				(boids_[i].position + (boids_[i].velocity * dt_seconds)),
 				config_);
 		}
 	}

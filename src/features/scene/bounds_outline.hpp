@@ -7,7 +7,7 @@
 #define ESP32C6_BOIDS_SIM_FEATURES_SCENE_BOUNDS_OUTLINE_HPP_
 
 #include "Camera.hpp"
-#include "core/rendering.hpp"
+#include "core/rendering/rendering.hpp"
 
 namespace scene::bounds_outline
 {

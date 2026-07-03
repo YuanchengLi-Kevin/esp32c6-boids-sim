@@ -7,7 +7,7 @@
 
 #include "Material.hpp"
 #include "Object.hpp"
-#include "core/rendering.hpp"
+#include "core/rendering/rendering.hpp"
 
 #include <algorithm>
 #include <array>

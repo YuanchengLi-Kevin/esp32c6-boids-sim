@@ -8,7 +8,7 @@
 
 #include <Camera.hpp>
 #include <Scene.hpp>
-#include "core/rendering.hpp"
+#include "core/rendering/rendering.hpp"
 
 namespace scene
 {

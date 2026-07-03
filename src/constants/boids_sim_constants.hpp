@@ -42,7 +42,7 @@ namespace constants
     {
         inline constexpr int kPositionX = 0;
         inline constexpr int kPositionY = 70;
-        inline constexpr int kPositionZ = -760;
+        inline constexpr int kPositionZ = -1600;
         inline constexpr int kTargetX = 0;
         inline constexpr int kTargetY = 0;
         inline constexpr int kTargetZ = 0;
@@ -69,8 +69,8 @@ namespace constants
         inline constexpr float kSeparationWeight = 110.0f;
         inline constexpr float kAlignmentWeight = 2.8f;
         inline constexpr float kCohesionWeight = 0.8f;
-        inline constexpr float kMinSpeed = 18.0f;
-        inline constexpr float kMaxSpeed = 70.0f;
+        inline constexpr float kMinSpeed = 50.0f;
+        inline constexpr float kMaxSpeed = 100.0f;
     } // namespace boids
 
     namespace boid_mesh

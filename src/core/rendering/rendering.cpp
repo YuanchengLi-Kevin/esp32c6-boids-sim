@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "core/rendering.hpp"
+#include "core/rendering/rendering.hpp"
 
 #include <cstdlib>
 

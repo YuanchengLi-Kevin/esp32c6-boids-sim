@@ -8,7 +8,7 @@ project(esp32c6_boids_sim LANGUAGES C CXX)
 
 target_sources(app PRIVATE
     src/main.cpp
-    src/core/rendering.cpp
+    src/core/rendering/rendering.cpp
     src/features/boids/boids.cpp
     src/features/boids/boids_renderer.cpp
     src/features/boids/simulation.cpp
