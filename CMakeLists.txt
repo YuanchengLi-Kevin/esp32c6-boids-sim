@@ -11,7 +11,6 @@ target_sources(app PRIVATE
     src/core/rendering/rendering.cpp
     src/features/boids/boids.cpp
     src/features/boids/boids_renderer.cpp
-    src/features/boids/simulation.cpp
     src/features/scene/scene.cpp
     src/features/scene/bounds_outline.cpp
 )
