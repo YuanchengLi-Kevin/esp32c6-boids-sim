@@ -7,7 +7,7 @@
 #define ESP32C6_BOIDS_SIM_CORE_RENDERING_HPP_
 
 #include "Camera.hpp"
-#include "constants/boids_sim_constants.hpp"
+#include "constants/constants.hpp"
 
 #include <cstdint>
 

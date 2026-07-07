@@ -5,7 +5,7 @@
 
 #include "features/rendering/rendering.hpp"
 
-#include "constants/boids_sim_constants.hpp"
+#include "constants/constants.hpp"
 #include "features/boids/boids_renderer.hpp"
 #include "features/boids/boids_snapshot.hpp"
 #include "features/scene/bounds_outline.hpp"

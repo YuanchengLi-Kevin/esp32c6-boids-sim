@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef ESP32C6_BOIDS_SIM_FEATURES_BOIDS_BOIDS_HPP_
-#define ESP32C6_BOIDS_SIM_FEATURES_BOIDS_BOIDS_HPP_
+#ifndef ESP32C6_BOIDS_SIM_FEATURES_BOIDS_MODEL_FLOCK_HPP_
+#define ESP32C6_BOIDS_SIM_FEATURES_BOIDS_MODEL_FLOCK_HPP_
 
-#include "constants/boids_sim_constants.hpp"
+#include "constants/constants.hpp"
 #include "core/vec3/vec3.hpp"
+#include "features/boids/model/boid.hpp"
 
 #include <array>
 #include <cstddef>
@@ -15,12 +16,6 @@
 
 namespace boids
 {
-
-	struct Boid
-	{
-		Vec3 position;
-		Vec3 velocity;
-	};
 
 	struct FlockConfig
 	{
@@ -66,4 +61,4 @@ namespace boids
 
 } // namespace boids
 
-#endif // ESP32C6_BOIDS_SIM_FEATURES_BOIDS_BOIDS_HPP_
+#endif // ESP32C6_BOIDS_SIM_FEATURES_BOIDS_MODEL_FLOCK_HPP_

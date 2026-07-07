@@ -5,7 +5,7 @@
 
 #include "scene.hpp"
 
-#include "constants/boids_sim_constants.hpp"
+#include "constants/constants.hpp"
 
 #include <algorithm>
 #include <array>

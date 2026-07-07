@@ -5,7 +5,7 @@
 
 #include "features/boids/boids_snapshot.hpp"
 
-#include "features/boids/boids.hpp"
+#include "features/boids/model/flock.hpp"
 
 #include <algorithm>
 

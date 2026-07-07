@@ -6,7 +6,7 @@
 #ifndef ESP32C6_BOIDS_SIM_FEATURES_BOIDS_BOIDS_SNAPSHOT_HPP_
 #define ESP32C6_BOIDS_SIM_FEATURES_BOIDS_BOIDS_SNAPSHOT_HPP_
 
-#include "constants/boids_sim_constants.hpp"
+#include "constants/constants.hpp"
 #include "core/vec3/vec3.hpp"
 
 #include <array>

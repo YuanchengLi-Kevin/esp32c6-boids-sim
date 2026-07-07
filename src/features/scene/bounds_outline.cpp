@@ -5,7 +5,7 @@
 
 #include "features/scene/bounds_outline.hpp"
 
-#include "constants/boids_sim_constants.hpp"
+#include "constants/constants.hpp"
 
 #include <array>
 #include <cstdint>
