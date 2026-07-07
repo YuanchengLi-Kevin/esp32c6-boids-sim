@@ -38,6 +38,20 @@ namespace constants
         inline constexpr uint32_t kDelayMs = 16u;
     } // namespace frame
 
+    namespace simulation
+    {
+        inline constexpr uint32_t kStepMs = 16u;
+        inline constexpr int kThreadPriority = 4;
+        inline constexpr int kThreadStackSize = 4096;
+    } // namespace simulation
+
+    namespace render_thread
+    {
+        inline constexpr uint32_t kFrameDelayMs = 33u;
+        inline constexpr int kThreadPriority = 5;
+        inline constexpr int kThreadStackSize = 8192;
+    } // namespace render_thread
+
     namespace camera
     {
         inline constexpr int kPositionX = 0;

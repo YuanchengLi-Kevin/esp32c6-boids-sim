@@ -17,10 +17,13 @@
 #include <zephyr/drivers/display.h>
 #include <zephyr/logging/log.h>
 
+using std::array;
+
 LOG_MODULE_REGISTER(scene, LOG_LEVEL_INF);
 
 namespace scene
 {
+	namespace rendering = core::rendering;
 	namespace
 	{
 
@@ -32,15 +35,13 @@ namespace scene
 #if !DT_NODE_HAS_STATUS(DISPLAY_NODE, okay)
 #error "No ready zephyr,display chosen node"
 #endif
-
 		const device *display_device = DEVICE_DT_GET(DISPLAY_NODE);
 
-		std::array<uint16_t, core::rendering::kFramebufferWidth * core::rendering::kScreenHeight> framebuffer;
-		std::array<uint16_t, core::rendering::kFramebufferWidth * core::rendering::kScreenHeight>
-			previous_framebuffer;
-		std::array<uint16_t, core::rendering::kScreenWidth * constants::display::kUploadRows> upload_buffer;
-		std::array<int, core::rendering::kScreenHeight> dirty_min_x;
-		std::array<int, core::rendering::kScreenHeight> dirty_max_x;
+		array<uint16_t, rendering::kFramebufferWidth * rendering::kScreenHeight> framebuffer;
+		array<uint16_t, rendering::kFramebufferWidth * rendering::kScreenHeight> previous_framebuffer;
+		array<uint16_t, rendering::kScreenWidth * constants::display::kUploadRows> upload_buffer;
+		array<int, rendering::kScreenHeight> dirty_min_x;
+		array<int, rendering::kScreenHeight> dirty_max_x;
 
 		Renderer::Scene *active_scene = nullptr;
 		Renderer::Camera active_camera;
@@ -68,15 +69,15 @@ namespace scene
 
 		bool flushFullDisplay()
 		{
-			for (int y = 0; y < core::rendering::kScreenHeight; y += constants::display::kUploadRows)
+			for (int y = 0; y < rendering::kScreenHeight; y += constants::display::kUploadRows)
 			{
-				const int rows = std::min(constants::display::kUploadRows, core::rendering::kScreenHeight - y);
+				const int rows = std::min(constants::display::kUploadRows, rendering::kScreenHeight - y);
 				for (int row = 0; row < rows; ++row)
 				{
 					const uint16_t *src =
-						&framebuffer[(y + row) * core::rendering::kFramebufferWidth];
-					uint16_t *dst = &upload_buffer[row * core::rendering::kScreenWidth];
-					for (int x = 0; x < core::rendering::kFramebufferWidth; ++x)
+						&framebuffer[(y + row) * rendering::kFramebufferWidth];
+					uint16_t *dst = &upload_buffer[row * rendering::kScreenWidth];
+					for (int x = 0; x < rendering::kFramebufferWidth; ++x)
 					{
 						const uint16_t color = src[x];
 						dst[(x * 2)] = color;
@@ -84,7 +85,7 @@ namespace scene
 					}
 				}
 
-				if (!writeDisplayRegion(0, y, core::rendering::kScreenWidth, rows))
+				if (!writeDisplayRegion(0, y, rendering::kScreenWidth, rows))
 				{
 					return false;
 				}
@@ -96,25 +97,25 @@ namespace scene
 
 		void findDirtyRows()
 		{
-			dirty_min_x.fill(core::rendering::kFramebufferWidth);
+			dirty_min_x.fill(rendering::kFramebufferWidth);
 			dirty_max_x.fill(-1);
 
-			for (int y = 0; y < core::rendering::kScreenHeight; ++y)
+			for (int y = 0; y < rendering::kScreenHeight; ++y)
 			{
-				const int row_offset = y * core::rendering::kFramebufferWidth;
+				const int row_offset = y * rendering::kFramebufferWidth;
 				int first = 0;
-				while (first < core::rendering::kFramebufferWidth &&
+				while (first < rendering::kFramebufferWidth &&
 					   framebuffer[row_offset + first] == previous_framebuffer[row_offset + first])
 				{
 					++first;
 				}
 
-				if (first == core::rendering::kFramebufferWidth)
+				if (first == rendering::kFramebufferWidth)
 				{
 					continue;
 				}
 
-				int last = core::rendering::kFramebufferWidth - 1;
+				int last = rendering::kFramebufferWidth - 1;
 				while (last > first &&
 					   framebuffer[row_offset + last] == previous_framebuffer[row_offset + last])
 				{
@@ -130,7 +131,7 @@ namespace scene
 		{
 			findDirtyRows();
 
-			for (int y = 0; y < core::rendering::kScreenHeight;)
+			for (int y = 0; y < rendering::kScreenHeight;)
 			{
 				if (dirty_max_x[y] < 0)
 				{
@@ -144,7 +145,7 @@ namespace scene
 				int max_x = dirty_max_x[y];
 				++y;
 
-				while (y < core::rendering::kScreenHeight &&
+				while (y < rendering::kScreenHeight &&
 					   rows < constants::display::kUploadRows &&
 					   dirty_max_x[y] >= 0)
 				{
@@ -159,7 +160,7 @@ namespace scene
 				for (int row = 0; row < rows; ++row)
 				{
 					const uint16_t *src =
-						&framebuffer[(start_y + row) * core::rendering::kFramebufferWidth + min_x];
+						&framebuffer[(start_y + row) * rendering::kFramebufferWidth + min_x];
 					uint16_t *dst = &upload_buffer[row * span_display_width];
 					for (int x = 0; x < span_half_width; ++x)
 					{
@@ -176,7 +177,7 @@ namespace scene
 
 				for (int row = 0; row < rows; ++row)
 				{
-					const int row_offset = (start_y + row) * core::rendering::kFramebufferWidth;
+					const int row_offset = (start_y + row) * rendering::kFramebufferWidth;
 					std::copy_n(
 						&framebuffer[row_offset + min_x],
 						span_half_width,
@@ -201,7 +202,6 @@ namespace scene
 
 			return flushDirtyDisplay();
 		}
-
 	} // namespace
 
 	bool init()
@@ -232,8 +232,9 @@ namespace scene
 		static Renderer::Scene scene_storage(
 			framebuffer.data(),
 			nullptr,
-			core::rendering::kScreenWidth,
-			core::rendering::kScreenHeight);
+			rendering::kScreenWidth,
+			rendering::kScreenHeight);
+
 		active_scene = &scene_storage;
 		active_scene->setBackcolor(constants::colors::kBackground);
 		active_scene->setClearBuffer(true);
@@ -256,8 +257,8 @@ namespace scene
 		initialized = true;
 		LOG_INF(
 			"Rendering initialized: %dx%d half-width framebuffer",
-			core::rendering::kScreenWidth,
-			core::rendering::kScreenHeight);
+			rendering::kScreenWidth,
+			rendering::kScreenHeight);
 		return true;
 	}
 
@@ -271,13 +272,13 @@ namespace scene
 		return active_camera;
 	}
 
-	core::rendering::FramebufferView framebufferView()
+	rendering::FramebufferView framebufferView()
 	{
 		return {
 			framebuffer.data(),
-			core::rendering::kScreenWidth,
-			core::rendering::kScreenHeight,
-			core::rendering::kFramebufferWidth,
+			rendering::kScreenWidth,
+			rendering::kScreenHeight,
+			rendering::kFramebufferWidth,
 		};
 	}
 

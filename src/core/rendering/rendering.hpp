@@ -33,7 +33,7 @@ namespace core::rendering
 		bool visible;
 	};
 
-	int32_t toWorld(float value);
+	Vector3 toWorld(float x, float y, float z);
 	ScreenPoint projectWorldPoint(const Renderer::Camera &camera, const Vector3 &point);
 	void plotPixel(const FramebufferView &framebuffer, int x, int y, uint16_t color);
 	void drawLine(const FramebufferView &framebuffer, ScreenPoint a, ScreenPoint b, uint16_t color);

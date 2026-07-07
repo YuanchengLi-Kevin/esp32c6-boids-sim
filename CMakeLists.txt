@@ -11,8 +11,10 @@ target_sources(app PRIVATE
     src/core/rendering/rendering.cpp
     src/features/boids/boids.cpp
     src/features/boids/boids_renderer.cpp
+    src/features/boids/boids_snapshot.cpp
     src/features/scene/scene.cpp
     src/features/scene/bounds_outline.cpp
+    src/features/rendering/rendering.cpp
 )
 
 target_include_directories(app PRIVATE

@@ -6,6 +6,8 @@
 #include "constants/boids_sim_constants.hpp"
 #include "features/boids/boids.hpp"
 #include "features/boids/boids_renderer.hpp"
+#include "features/boids/boids_snapshot.hpp"
+#include "features/rendering/rendering.hpp"
 #include "features/scene/bounds_outline.hpp"
 #include "features/scene/scene.hpp"
 
@@ -14,15 +16,42 @@
 
 LOG_MODULE_REGISTER(boids_sim, LOG_LEVEL_INF);
 
+namespace
+{
+
+	K_THREAD_STACK_DEFINE(
+		simulation_thread_stack,
+		constants::simulation::kThreadStackSize);
+
+	k_thread simulation_thread;
+
+	boids::FlockConfig makeFlockConfig()
+	{
+		boids::FlockConfig flock_config;
+		flock_config.boid_count = constants::boids::kSpawnedBoids;
+		return flock_config;
+	}
+
+	void simulation_thread_start(void *, void *, void *)
+	{
+		boids::FlockConfig flock_config = makeFlockConfig();
+		boids::Flock flock;
+		flock.init(constants::boids::kSeed, flock_config);
+		boids::publishRenderSnapshot(flock);
+
+		while (true)
+		{
+			flock.update(constants::simulation::kStepMs);
+			boids::publishRenderSnapshot(flock);
+			k_sleep(K_MSEC(constants::simulation::kStepMs));
+		}
+	}
+
+} // namespace
+
 int main()
 {
 	LOG_INF("ESP32-C6 Boids Sim initialized on %s", CONFIG_BOARD_TARGET);
-
-	boids::FlockConfig flock_config;
-	flock_config.boid_count = constants::boids::kSpawnedBoids;
-
-	boids::Flock flock;
-	flock.init(constants::boids::kSeed, flock_config);
 
 	if (!scene::init())
 	{
@@ -30,6 +59,7 @@ int main()
 		return 1;
 	}
 
+	const boids::FlockConfig flock_config = makeFlockConfig();
 	boids::renderer::init(scene::jetScene());
 	scene::bounds_outline::init({
 		flock_config.bounds_min.x,
@@ -40,23 +70,22 @@ int main()
 		flock_config.bounds_max.z,
 	});
 
-	uint32_t previous_ms = k_uptime_get_32();
-	while (true)
-	{
-		const uint32_t now_ms = k_uptime_get_32();
-		uint32_t dt_ms = now_ms - previous_ms;
-		previous_ms = now_ms;
-		if (dt_ms > constants::frame::kMaxDeltaMs)
-		{
-			dt_ms = constants::frame::kMaxDeltaMs;
-		}
+	boids::initRenderSnapshots();
 
-		flock.update(dt_ms);
-		boids::renderer::update(flock);
-		scene::renderScene();
-		scene::bounds_outline::draw(scene::camera(), scene::framebufferView());
-		scene::flush();
-		k_sleep(K_MSEC(constants::frame::kDelayMs));
-	}
+	k_thread_create(
+		&simulation_thread,
+		simulation_thread_stack,
+		K_THREAD_STACK_SIZEOF(simulation_thread_stack),
+		simulation_thread_start,
+		nullptr,
+		nullptr,
+		nullptr,
+		constants::simulation::kThreadPriority,
+		0,
+		K_NO_WAIT);
+	k_thread_name_set(&simulation_thread, "boids_sim");
+
+	rendering::init();
+
 	return 0;
 }

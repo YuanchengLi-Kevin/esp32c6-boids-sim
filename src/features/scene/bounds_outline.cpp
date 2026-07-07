@@ -10,74 +10,19 @@
 #include <array>
 #include <cstdint>
 
+using std::array;
+using std::size_t;
+
 namespace scene::bounds_outline
 {
+
+	namespace rendering = core::rendering;
+
 	namespace
 	{
 
 		Bounds active_bounds{};
 
-	} // namespace
-
-	void init(const Bounds &bounds)
-	{
-		active_bounds = bounds;
-	}
-
-	void draw(const Renderer::Camera &camera, const core::rendering::FramebufferView &framebuffer)
-	{
-		const std::array<Vector3, 8> corners = {{
-			{
-				core::rendering::toWorld(active_bounds.min_x),
-				core::rendering::toWorld(active_bounds.min_y),
-				core::rendering::toWorld(active_bounds.min_z),
-			},
-			{
-				core::rendering::toWorld(active_bounds.max_x),
-				core::rendering::toWorld(active_bounds.min_y),
-				core::rendering::toWorld(active_bounds.min_z),
-			},
-			{
-				core::rendering::toWorld(active_bounds.max_x),
-				core::rendering::toWorld(active_bounds.max_y),
-				core::rendering::toWorld(active_bounds.min_z),
-			},
-			{
-				core::rendering::toWorld(active_bounds.min_x),
-				core::rendering::toWorld(active_bounds.max_y),
-				core::rendering::toWorld(active_bounds.min_z),
-			},
-			{
-				core::rendering::toWorld(active_bounds.min_x),
-				core::rendering::toWorld(active_bounds.min_y),
-				core::rendering::toWorld(active_bounds.max_z),
-			},
-			{
-				core::rendering::toWorld(active_bounds.max_x),
-				core::rendering::toWorld(active_bounds.min_y),
-				core::rendering::toWorld(active_bounds.max_z),
-			},
-			{
-				core::rendering::toWorld(active_bounds.max_x),
-				core::rendering::toWorld(active_bounds.max_y),
-				core::rendering::toWorld(active_bounds.max_z),
-			},
-			{
-				core::rendering::toWorld(active_bounds.min_x),
-				core::rendering::toWorld(active_bounds.max_y),
-				core::rendering::toWorld(active_bounds.max_z),
-			},
-		}};
-		const std::array<core::rendering::ScreenPoint, 8> projected = {{
-			core::rendering::projectWorldPoint(camera, corners[0]),
-			core::rendering::projectWorldPoint(camera, corners[1]),
-			core::rendering::projectWorldPoint(camera, corners[2]),
-			core::rendering::projectWorldPoint(camera, corners[3]),
-			core::rendering::projectWorldPoint(camera, corners[4]),
-			core::rendering::projectWorldPoint(camera, corners[5]),
-			core::rendering::projectWorldPoint(camera, corners[6]),
-			core::rendering::projectWorldPoint(camera, corners[7]),
-		}};
 		constexpr std::array<std::array<int, 2>, 12> edges = {{
 			{{0, 1}},
 			{{1, 2}},
@@ -93,9 +38,35 @@ namespace scene::bounds_outline
 			{{3, 7}},
 		}};
 
+	} // namespace
+
+	void init(const Bounds &bounds)
+	{
+		active_bounds = bounds;
+	}
+
+	void draw(const Renderer::Camera &camera, const rendering::FramebufferView &framebuffer)
+	{
+		const array<Vector3, 8> corners = {{
+			rendering::toWorld(active_bounds.min_x, active_bounds.min_y, active_bounds.min_z),
+			rendering::toWorld(active_bounds.max_x, active_bounds.min_y, active_bounds.min_z),
+			rendering::toWorld(active_bounds.max_x, active_bounds.max_y, active_bounds.min_z),
+			rendering::toWorld(active_bounds.min_x, active_bounds.max_y, active_bounds.min_z),
+			rendering::toWorld(active_bounds.min_x, active_bounds.min_y, active_bounds.max_z),
+			rendering::toWorld(active_bounds.max_x, active_bounds.min_y, active_bounds.max_z),
+			rendering::toWorld(active_bounds.max_x, active_bounds.max_y, active_bounds.max_z),
+			rendering::toWorld(active_bounds.min_x, active_bounds.max_y, active_bounds.max_z),
+		}};
+
+		array<rendering::ScreenPoint, corners.size()> projected{};
+		for (size_t i = 0; i < corners.size(); ++i)
+		{
+			projected[i] = rendering::projectWorldPoint(camera, corners[i]);
+		}
+
 		for (const auto &edge : edges)
 		{
-			core::rendering::drawLine(
+			rendering::drawLine(
 				framebuffer,
 				projected[edge[0]],
 				projected[edge[1]],

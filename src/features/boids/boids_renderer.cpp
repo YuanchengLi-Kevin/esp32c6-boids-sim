@@ -85,9 +85,9 @@ namespace boids::renderer
 		initialized = true;
 	}
 
-	void update(const Flock &flock)
+	void update(const RenderSnapshot &snapshot)
 	{
-		const std::size_t count = std::min(flock.count(), kMaxRenderedBoids);
+		const std::size_t count = std::min(snapshot.count, kMaxRenderedBoids);
 		for (std::size_t i = 0; i < kMaxRenderedBoids; ++i)
 		{
 			boid_objects[i].enabled = i < count;
@@ -96,17 +96,12 @@ namespace boids::renderer
 				continue;
 			}
 
-			const Boid &boid = flock.boid(i);
-			const Vector3 position = {
-				core::rendering::toWorld(boid.position.x),
-				core::rendering::toWorld(boid.position.y),
-				core::rendering::toWorld(boid.position.z),
-			};
-			const Vector3 target = {
-				core::rendering::toWorld(boid.position.x + boid.velocity.x),
-				core::rendering::toWorld(boid.position.y + boid.velocity.y),
-				core::rendering::toWorld(boid.position.z + boid.velocity.z),
-			};
+			const RenderBoid &boid = snapshot.boids[i];
+
+			const Vector3 position = core::rendering::toWorld(boid.position.x, boid.position.y, boid.position.z);
+
+			const Vec3 targetPos = boid.position + boid.velocity;
+			const Vector3 target = core::rendering::toWorld(targetPos.x, targetPos.y, targetPos.z);
 
 			boid_objects[i].setPosition(position);
 			boid_objects[i].lookAt(target);

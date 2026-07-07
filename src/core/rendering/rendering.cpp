@@ -10,9 +10,13 @@
 namespace core::rendering
 {
 
-	int32_t toWorld(float value)
+	Vector3 toWorld(float x, float y, float z)
 	{
-		return static_cast<int32_t>(value * constants::world::kScale);
+		return {
+			static_cast<int32_t>(x * constants::world::kScale),
+			static_cast<int32_t>(y * constants::world::kScale),
+			static_cast<int32_t>(z * constants::world::kScale),
+		};
 	}
 
 	ScreenPoint projectWorldPoint(const Renderer::Camera &camera, const Vector3 &point)
