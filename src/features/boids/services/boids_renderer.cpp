@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "features/boids/boids_renderer.hpp"
+#include "features/boids/services/boids_renderer.hpp"
 
 #include "Material.hpp"
 #include "Object.hpp"

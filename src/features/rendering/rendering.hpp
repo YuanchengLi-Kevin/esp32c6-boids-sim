@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef ESP32C6_BOIDS_SIM_FEATURES_RENDERING_RENDERING_HPP_
-#define ESP32C6_BOIDS_SIM_FEATURES_RENDERING_RENDERING_HPP_
+#pragma once
 
 namespace rendering
 {
@@ -12,5 +11,3 @@ namespace rendering
 	void init();
 
 } // namespace rendering
-
-#endif // ESP32C6_BOIDS_SIM_FEATURES_RENDERING_RENDERING_HPP_

@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef ESP32C6_BOIDS_SIM_CONFIG_JET_CONFIG_HPP_
-#define ESP32C6_BOIDS_SIM_CONFIG_JET_CONFIG_HPP_
+#pragma once
 
 /*
  * Jet keeps configuration in the consuming frontend. Start with the
@@ -23,5 +22,3 @@
 
 #undef SSR_FIELD_REFLECT
 #define SSR_FIELD_REFLECT 0
-
-#endif  // ESP32C6_BOIDS_SIM_CONFIG_JET_CONFIG_HPP_

@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef ESP32C6_BOIDS_SIM_CONSTANTS_CONSTANTS_HPP_
-#define ESP32C6_BOIDS_SIM_CONSTANTS_CONSTANTS_HPP_
+#pragma once
 
 #include <cstddef>
 #include <cstdint>
@@ -109,5 +108,3 @@ namespace constants
     } // namespace rendering
 
 } // namespace constants
-
-#endif // ESP32C6_BOIDS_SIM_CONSTANTS_CONSTANTS_HPP_

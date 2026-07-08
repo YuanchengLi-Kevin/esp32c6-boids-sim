@@ -9,9 +9,9 @@ project(esp32c6_boids_sim LANGUAGES C CXX)
 target_sources(app PRIVATE
     src/main.cpp
     src/core/rendering/rendering.cpp
-    src/features/boids/boids.cpp
-    src/features/boids/boids_renderer.cpp
-    src/features/boids/boids_snapshot.cpp
+    src/features/boids/classes/flock.cpp
+    src/features/boids/services/boids_renderer.cpp
+    src/features/boids/store/render_snapshot_store.cpp
     src/features/scene/scene.cpp
     src/features/scene/bounds_outline.cpp
     src/features/rendering/rendering.cpp

@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef ESP32C6_BOIDS_SIM_FEATURES_SCENE_SCENE_HPP_
-#define ESP32C6_BOIDS_SIM_FEATURES_SCENE_SCENE_HPP_
+#pragma once
 
 #include <Camera.hpp>
 #include <Scene.hpp>
@@ -21,5 +20,3 @@ namespace scene
     void flush();
 
 } // namespace scene
-
-#endif // ESP32C6_BOIDS_SIM_FEATURES_SCENE_SCENE_HPP_

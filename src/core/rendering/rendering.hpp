@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef ESP32C6_BOIDS_SIM_CORE_RENDERING_HPP_
-#define ESP32C6_BOIDS_SIM_CORE_RENDERING_HPP_
+#pragma once
 
 #include "Camera.hpp"
 #include "constants/constants.hpp"
@@ -39,5 +38,3 @@ namespace core::rendering
 	void drawLine(const FramebufferView &framebuffer, ScreenPoint a, ScreenPoint b, uint16_t color);
 
 } // namespace core::rendering
-
-#endif // ESP32C6_BOIDS_SIM_CORE_RENDERING_HPP_

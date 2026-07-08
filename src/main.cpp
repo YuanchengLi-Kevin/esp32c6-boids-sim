@@ -4,9 +4,9 @@
  */
 
 #include "constants/constants.hpp"
-#include "features/boids/boids_renderer.hpp"
-#include "features/boids/boids_snapshot.hpp"
-#include "features/boids/model/flock.hpp"
+#include "features/boids/classes/flock.hpp"
+#include "features/boids/services/boids_renderer.hpp"
+#include "features/boids/store/render_snapshot_store.hpp"
 #include "features/rendering/rendering.hpp"
 #include "features/scene/bounds_outline.hpp"
 #include "features/scene/scene.hpp"

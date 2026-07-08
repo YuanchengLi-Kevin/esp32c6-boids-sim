@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef ESP32C6_BOIDS_SIM_FEATURES_BOIDS_BOIDS_SNAPSHOT_HPP_
-#define ESP32C6_BOIDS_SIM_FEATURES_BOIDS_BOIDS_SNAPSHOT_HPP_
+#pragma once
 
 #include "constants/constants.hpp"
 #include "core/vec3/vec3.hpp"
@@ -15,8 +14,6 @@
 
 namespace boids
 {
-
-	class Flock;
 
 	inline constexpr std::size_t kMaxRenderSnapshotBoids = constants::boids::kMaxBoids;
 
@@ -33,10 +30,4 @@ namespace boids
 		uint32_t sequence = 0;
 	};
 
-	void initRenderSnapshots();
-	void publishRenderSnapshot(const Flock &flock);
-	bool copyLatestRenderSnapshot(RenderSnapshot &snapshot, uint32_t last_sequence);
-
 } // namespace boids
-
-#endif // ESP32C6_BOIDS_SIM_FEATURES_BOIDS_BOIDS_SNAPSHOT_HPP_

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "features/boids/model/flock.hpp"
+#include "features/boids/classes/flock.hpp"
 
 #include <algorithm>
 #include <cmath>

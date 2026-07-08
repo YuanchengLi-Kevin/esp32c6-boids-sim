@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "features/boids/boids_snapshot.hpp"
+#include "features/boids/store/render_snapshot_store.hpp"
 
-#include "features/boids/model/flock.hpp"
+#include "features/boids/classes/flock.hpp"
 
 #include <algorithm>
+#include <array>
+#include <cstddef>
+#include <cstdint>
 
 #include <zephyr/kernel.h>
 
