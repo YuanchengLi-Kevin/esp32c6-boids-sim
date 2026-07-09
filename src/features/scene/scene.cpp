@@ -15,11 +15,9 @@
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/display.h>
-#include <zephyr/logging/log.h>
+#include <zephyr/kernel.h>
 
 using std::array;
-
-LOG_MODULE_REGISTER(scene, LOG_LEVEL_INF);
 
 namespace scene
 {
@@ -60,7 +58,7 @@ namespace scene
 			const int err = display_write(display_device, x, y, &descriptor, upload_buffer.data());
 			if (err != 0)
 			{
-				LOG_ERR("display_write failed at (%d, %d) %dx%d: %d", x, y, width, height, err);
+				printk("display_write failed at (%d, %d) %dx%d: %d\n", x, y, width, height, err);
 				return false;
 			}
 
@@ -213,20 +211,20 @@ namespace scene
 
 		if (!device_is_ready(display_device))
 		{
-			LOG_ERR("Display device is not ready");
+			printk("Display device is not ready\n");
 			return false;
 		}
 
 		const int pixel_format_err = display_set_pixel_format(display_device, PIXEL_FORMAT_RGB_565);
 		if (pixel_format_err != 0)
 		{
-			LOG_WRN("display_set_pixel_format failed: %d", pixel_format_err);
+			printk("display_set_pixel_format failed: %d\n", pixel_format_err);
 		}
 
 		const int blanking_err = display_blanking_off(display_device);
 		if (blanking_err != 0)
 		{
-			LOG_WRN("display_blanking_off failed: %d", blanking_err);
+			printk("display_blanking_off failed: %d\n", blanking_err);
 		}
 
 		static Renderer::Scene scene_storage(
@@ -255,8 +253,8 @@ namespace scene
 		active_scene->setCamera(&active_camera);
 
 		initialized = true;
-		LOG_INF(
-			"Rendering initialized: %dx%d half-width framebuffer",
+		printk(
+			"Rendering initialized: %dx%d half-width framebuffer\n",
 			rendering::kScreenWidth,
 			rendering::kScreenHeight);
 		return true;
