@@ -47,7 +47,6 @@ namespace constants
 
     namespace render_thread
     {
-        inline constexpr uint32_t kFrameDelayMs = 33u;
         inline constexpr int kThreadPriority = 5;
         inline constexpr int kThreadStackSize = 8192;
     } // namespace render_thread

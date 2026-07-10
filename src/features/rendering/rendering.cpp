@@ -34,6 +34,8 @@ namespace rendering
 
 			while (true)
 			{
+				boids::waitForRenderSnapshot();
+
 				if (boids::copyLatestRenderSnapshot(render_snapshot, last_sequence))
 				{
 					last_sequence = render_snapshot.sequence;
@@ -42,8 +44,6 @@ namespace rendering
 					scene::bounds_outline::draw(scene::camera(), scene::framebufferView());
 					scene::flush();
 				}
-
-				k_sleep(K_MSEC(constants::render_thread::kFrameDelayMs));
 			}
 		}
 

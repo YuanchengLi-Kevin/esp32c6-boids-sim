@@ -16,6 +16,7 @@ namespace boids
 
 	void initRenderSnapshots();
 	void publishRenderSnapshot(const Flock &flock);
+	void waitForRenderSnapshot();
 	bool copyLatestRenderSnapshot(RenderSnapshot &snapshot, uint32_t last_sequence);
 
 } // namespace boids

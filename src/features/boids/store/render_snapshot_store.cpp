@@ -22,6 +22,7 @@ namespace boids
 		constexpr std::size_t kSnapshotBufferCount = 2;
 
 		k_mutex snapshot_mutex;
+		k_sem snapshot_available;
 		std::array<RenderSnapshot, kSnapshotBufferCount> snapshot_buffers;
 		std::size_t published_snapshot_index = 0;
 		uint32_t next_snapshot_sequence = 1;
@@ -51,6 +52,7 @@ namespace boids
 		}
 
 		k_mutex_init(&snapshot_mutex);
+		k_sem_init(&snapshot_available, 0, 1);
 		initialized = true;
 	}
 
@@ -64,6 +66,12 @@ namespace boids
 		published_snapshot_index = write_index;
 
 		k_mutex_unlock(&snapshot_mutex);
+		k_sem_give(&snapshot_available);
+	}
+
+	void waitForRenderSnapshot()
+	{
+		k_sem_take(&snapshot_available, K_FOREVER);
 	}
 
 	bool copyLatestRenderSnapshot(RenderSnapshot &snapshot, uint32_t last_sequence)
