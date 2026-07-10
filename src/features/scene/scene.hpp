@@ -16,6 +16,7 @@ namespace scene
     Renderer::Scene &jetScene();
     Renderer::Camera &camera();
     core::rendering::FramebufferView framebufferView();
+    void updateCameraOrbit();
     void renderScene();
     void flush();
 

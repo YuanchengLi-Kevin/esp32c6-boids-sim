@@ -40,6 +40,7 @@ namespace rendering
 				{
 					last_sequence = render_snapshot.sequence;
 					boids::renderer::update(render_snapshot);
+					scene::updateCameraOrbit();
 					scene::renderScene();
 					scene::bounds_outline::draw(scene::camera(), scene::framebufferView());
 					scene::flush();

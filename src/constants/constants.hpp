@@ -55,11 +55,14 @@ namespace constants
     {
         inline constexpr int kPositionX = 0;
         inline constexpr int kPositionY = 70;
-        inline constexpr int kPositionZ = -1600;
+        inline constexpr int kPositionZ = -1400;
         inline constexpr int kTargetX = 0;
         inline constexpr int kTargetY = 0;
         inline constexpr int kTargetZ = 0;
-        inline constexpr int kFovDegrees = 70;
+        inline constexpr int kOrbitRadius = 1400;
+        inline constexpr int kOrbitHeight = 70;
+        inline constexpr uint32_t kOrbitPeriodMs = 20000u;
+        inline constexpr int kFovDegrees = 60;
         inline constexpr int kNearPlane = 16;
         inline constexpr int kFarPlane = 2000;
     } // namespace camera

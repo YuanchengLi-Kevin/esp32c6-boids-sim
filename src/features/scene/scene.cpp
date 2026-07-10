@@ -280,6 +280,28 @@ namespace scene
 		};
 	}
 
+	void updateCameraOrbit()
+	{
+		const uint32_t orbit_time = k_uptime_get_32() % constants::camera::kOrbitPeriodMs;
+		const float angle =
+			static_cast<float>(orbit_time) * static_cast<float>(Renderer::ANGLE_MAX) /
+			static_cast<float>(constants::camera::kOrbitPeriodMs);
+
+		const int x =
+			constants::camera::kTargetX +
+			static_cast<int>(constants::camera::kOrbitRadius * Renderer::lookupSin(angle));
+		const int z =
+			constants::camera::kTargetZ -
+			static_cast<int>(constants::camera::kOrbitRadius * Renderer::lookupCos(angle));
+
+		active_camera.setPosition(x, constants::camera::kOrbitHeight, z);
+		active_camera.lookAt({
+			constants::camera::kTargetX,
+			constants::camera::kTargetY,
+			constants::camera::kTargetZ,
+		});
+	}
+
 	void renderScene()
 	{
 		if (initialized)
