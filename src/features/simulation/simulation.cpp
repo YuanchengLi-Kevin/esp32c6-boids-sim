@@ -33,11 +33,23 @@ namespace simulation
                 "simulation: published initial render snapshot: count=%u\n",
                 static_cast<unsigned int>(flock.count()));
 
+            const int64_t epoch_ticks = k_uptime_ticks();
+            uint64_t completed_steps = 0u;
+
             while (true)
             {
-                flock.update(constants::simulation::kStepMs);
+                flock.update(constants::simulation::kStepSeconds);
                 boids::publishRenderSnapshot(flock);
-                k_sleep(K_MSEC(constants::simulation::kStepMs));
+
+                ++completed_steps;
+                const int64_t deadline_ticks =
+                    epoch_ticks +
+                    static_cast<int64_t>(
+                        (completed_steps * CONFIG_SYS_CLOCK_TICKS_PER_SEC +
+                         constants::simulation::kStepsPerSecond - 1u) /
+                        constants::simulation::kStepsPerSecond);
+
+                k_sleep(K_TIMEOUT_ABS_TICKS(deadline_ticks));
             }
         }
     }

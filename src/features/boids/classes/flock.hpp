@@ -47,7 +47,7 @@ namespace boids
 	{
 	public:
 		void init(uint32_t seed, const FlockConfig &config = FlockConfig{});
-		void update(uint32_t dt_ms);
+		void update(float dt_seconds);
 
 		std::size_t count() const { return active_count_; }
 		const Boid &boid(std::size_t index) const { return boids_[index]; }

@@ -107,14 +107,13 @@ namespace boids
 		}
 	}
 
-	void Flock::update(uint32_t dt_ms)
+	void Flock::update(float dt_seconds)
 	{
-		if (active_count_ == 0u || dt_ms == 0u)
+		if (active_count_ == 0u || dt_seconds <= 0.0f)
 		{
 			return;
 		}
 
-		const float dt_seconds = static_cast<float>(dt_ms) * 0.001f;
 		const float neighbor_radius_sq = config_.neighbor_radius * config_.neighbor_radius;
 		const float separation_radius_sq = config_.separation_radius * config_.separation_radius;
 

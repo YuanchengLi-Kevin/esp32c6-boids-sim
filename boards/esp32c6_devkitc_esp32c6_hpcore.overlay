@@ -29,7 +29,7 @@
 			pixel-format = <PANEL_PIXEL_FORMAT_RGB_565>;
 			width = <240>;
 			height = <320>;
-			rotation = <0>;
+			rotation = <90>;
 		};
 	};
 };

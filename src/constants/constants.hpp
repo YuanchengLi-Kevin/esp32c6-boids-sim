@@ -13,8 +13,8 @@ namespace constants
 
     namespace display
     {
-        inline constexpr int kScreenWidth = 240;
-        inline constexpr int kScreenHeight = 320;
+        inline constexpr int kScreenWidth = 320;
+        inline constexpr int kScreenHeight = 240;
         inline constexpr int kFramebufferWidth = kScreenWidth / 2;
         inline constexpr int kUploadRows = 8;
     } // namespace display
@@ -39,7 +39,8 @@ namespace constants
 
     namespace simulation
     {
-        inline constexpr uint32_t kStepMs = 16u;
+        inline constexpr uint32_t kStepsPerSecond = 30u;
+        inline constexpr float kStepSeconds = 1.0f / static_cast<float>(kStepsPerSecond);
         inline constexpr int kThreadPriority = 4;
         inline constexpr int kThreadStackSize = 4096;
     } // namespace simulation
