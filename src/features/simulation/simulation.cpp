@@ -6,6 +6,7 @@
 #include "constants/constants.hpp"
 #include "features/boids/store/render_snapshot_store.hpp"
 #include "features/boids/classes/flock.hpp"
+#include "features/profiling/profiling.hpp"
 
 #include <zephyr/kernel.h>
 
@@ -38,8 +39,13 @@ namespace simulation
 
             while (true)
             {
+				const uint64_t update_start = profiling::start();
                 flock.update(constants::simulation::kStepSeconds);
+				profiling::record(profiling::Stage::SimulationUpdate, update_start);
+
+				const uint64_t publish_start = profiling::start();
                 boids::publishRenderSnapshot(flock);
+				profiling::record(profiling::Stage::SnapshotPublish, publish_start);
 
                 ++completed_steps;
                 const int64_t deadline_ticks =

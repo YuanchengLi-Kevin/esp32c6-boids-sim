@@ -10,6 +10,7 @@
 #include "features/boids/store/render_snapshot_store.hpp"
 #include "features/scene/bounds_outline.hpp"
 #include "features/scene/scene.hpp"
+#include "features/profiling/profiling.hpp"
 
 #include <cstdint>
 
@@ -38,12 +39,27 @@ namespace rendering
 
 				if (boids::copyLatestRenderSnapshot(render_snapshot, last_sequence))
 				{
+					const uint64_t frame_start = profiling::start();
 					last_sequence = render_snapshot.sequence;
+
+					const uint64_t renderer_start = profiling::start();
 					boids::renderer::update(render_snapshot);
+					profiling::record(profiling::Stage::RendererUpdate, renderer_start);
+
 					scene::updateCameraOrbit();
+					const uint64_t render_start = profiling::start();
 					scene::renderScene();
+					profiling::record(profiling::Stage::SceneRender, render_start);
+
+					const uint64_t outline_start = profiling::start();
 					scene::bounds_outline::draw(scene::camera(), scene::framebufferView());
+					profiling::record(profiling::Stage::BoundsOutline, outline_start);
+
+					const uint64_t flush_start = profiling::start();
 					scene::flush();
+					profiling::record(profiling::Stage::DisplayFlush, flush_start);
+					profiling::record(profiling::Stage::RenderFrame, frame_start);
+					profiling::reportIfDue();
 				}
 			}
 		}

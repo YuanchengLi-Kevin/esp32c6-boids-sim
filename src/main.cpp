@@ -11,6 +11,7 @@
 #include "features/simulation/simulation.hpp"
 #include "features/scene/bounds_outline.hpp"
 #include "features/scene/scene.hpp"
+#include "features/profiling/profiling.hpp"
 
 #include <zephyr/kernel.h>
 
@@ -38,6 +39,7 @@ int main()
 	});
 
 	boids::initRenderSnapshots();
+	profiling::init();
 
 	simulation::init();
 	rendering::init();

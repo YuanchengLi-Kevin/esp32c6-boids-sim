@@ -16,6 +16,7 @@ target_sources(app PRIVATE
     src/features/scene/bounds_outline.cpp
     src/features/rendering/rendering.cpp
     src/features/simulation/simulation.cpp
+    src/features/profiling/profiling.cpp
 )
 
 target_include_directories(app PRIVATE
