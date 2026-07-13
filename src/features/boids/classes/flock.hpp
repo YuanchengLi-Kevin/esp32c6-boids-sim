@@ -53,10 +53,26 @@ namespace boids
 		const Boid &boid(std::size_t index) const { return boids_[index]; }
 
 	private:
+		struct GridCell
+		{
+			int16_t x = 0;
+			int16_t y = 0;
+			int16_t z = 0;
+		};
+
+		static constexpr int16_t kNoBoid = -1;
+
+		GridCell gridCell(const Vec3 &position) const;
+		std::size_t gridBucket(const GridCell &cell) const;
+		void rebuildSpatialGrid();
+
 		FlockConfig config_{};
 		std::size_t active_count_ = 0;
 		std::array<Boid, FlockConfig::kMaxBoids> boids_{};
 		std::array<Vec3, FlockConfig::kMaxBoids> next_velocities_{};
+		std::array<GridCell, FlockConfig::kMaxBoids> grid_cells_{};
+		std::array<int16_t, FlockConfig::kMaxBoids> grid_bucket_heads_{};
+		std::array<int16_t, FlockConfig::kMaxBoids> grid_next_boids_{};
 	};
 
 } // namespace boids

@@ -107,6 +107,38 @@ namespace boids
 		}
 	}
 
+	Flock::GridCell Flock::gridCell(const Vec3 &position) const
+	{
+		const float inverse_cell_size = 1.0f / config_.neighbor_radius;
+		return {
+			static_cast<int16_t>((position.x - config_.bounds_min.x) * inverse_cell_size),
+			static_cast<int16_t>((position.y - config_.bounds_min.y) * inverse_cell_size),
+			static_cast<int16_t>((position.z - config_.bounds_min.z) * inverse_cell_size),
+		};
+	}
+
+	std::size_t Flock::gridBucket(const GridCell &cell) const
+	{
+		const uint32_t hash =
+			(static_cast<uint32_t>(cell.x) * 73856093u) ^
+			(static_cast<uint32_t>(cell.y) * 19349663u) ^
+			(static_cast<uint32_t>(cell.z) * 83492791u);
+		return hash % grid_bucket_heads_.size();
+	}
+
+	void Flock::rebuildSpatialGrid()
+	{
+		grid_bucket_heads_.fill(kNoBoid);
+
+		for (std::size_t i = 0; i < active_count_; ++i)
+		{
+			grid_cells_[i] = gridCell(boids_[i].position);
+			const std::size_t bucket = gridBucket(grid_cells_[i]);
+			grid_next_boids_[i] = grid_bucket_heads_[bucket];
+			grid_bucket_heads_[bucket] = static_cast<int16_t>(i);
+		}
+	}
+
 	void Flock::update(float dt_seconds)
 	{
 		if (active_count_ == 0u || dt_seconds <= 0.0f)
@@ -116,6 +148,7 @@ namespace boids
 
 		const float neighbor_radius_sq = config_.neighbor_radius * config_.neighbor_radius;
 		const float separation_radius_sq = config_.separation_radius * config_.separation_radius;
+		rebuildSpatialGrid();
 
 		for (std::size_t i = 0; i < active_count_; ++i)
 		{
@@ -124,27 +157,46 @@ namespace boids
 			Vec3 cohesion = {0.0f, 0.0f, 0.0f};
 			std::size_t neighbor_count = 0;
 
-			for (std::size_t j = 0; j < active_count_; ++j)
+			const GridCell origin = grid_cells_[i];
+			for (int16_t z = origin.z - 1; z <= origin.z + 1; ++z)
 			{
-				if (i == j)
+				for (int16_t y = origin.y - 1; y <= origin.y + 1; ++y)
 				{
-					continue;
-				}
+					for (int16_t x = origin.x - 1; x <= origin.x + 1; ++x)
+					{
+						const GridCell cell = {x, y, z};
+						int16_t candidate = grid_bucket_heads_[gridBucket(cell)];
+						while (candidate != kNoBoid)
+						{
+							const std::size_t j = static_cast<std::size_t>(candidate);
+							candidate = grid_next_boids_[j];
 
-				const Vec3 offset = boids_[j].position - boids_[i].position;
-				const float distance_sq = lengthSquared(offset);
-				if (distance_sq > neighbor_radius_sq)
-				{
-					continue;
-				}
+							const GridCell candidate_cell = grid_cells_[j];
+							if (j == i ||
+								candidate_cell.x != cell.x ||
+								candidate_cell.y != cell.y ||
+								candidate_cell.z != cell.z)
+							{
+								continue;
+							}
 
-				alignment = alignment + boids_[j].velocity;
-				cohesion = cohesion + boids_[j].position;
-				++neighbor_count;
+							const Vec3 offset = boids_[j].position - boids_[i].position;
+							const float distance_sq = lengthSquared(offset);
+							if (distance_sq > neighbor_radius_sq)
+							{
+								continue;
+							}
 
-				if (distance_sq < separation_radius_sq && distance_sq > kEpsilon)
-				{
-					separation = separation + (offset * (-1.0f / distance_sq));
+							alignment = alignment + boids_[j].velocity;
+							cohesion = cohesion + boids_[j].position;
+							++neighbor_count;
+
+							if (distance_sq < separation_radius_sq && distance_sq > kEpsilon)
+							{
+								separation = separation + (offset * (-1.0f / distance_sq));
+							}
+						}
+					}
 				}
 			}
 
